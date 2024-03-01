@@ -1,0 +1,59 @@
+.home-page {
+    /* background-image: url('../../public/фон.png'); */
+    background-size: cover;
+    /* Растягиваем картинку  по ширине */
+    background-repeat: no-repeat;
+    /* Картинка фона без повторения */
+    background-position: center;
+    /* Позиция фона по центру */
+    height: 100vh;
+    /* Высота элемента равна высоте окна просмотра */
+    width: 100vw;
+    /* Ширина элемента равна ширине окна просмотра */
+    position: relative;
+    /* Позиционирование элемента относительно окна просмотра */
+}
+
+.home-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+.home-body {
+    display: flex;
+    justify-content: center;
+}
+
+.body-card{
+    padding-left: 30px !important;
+    margin-left: 15px !important;
+}
+
+.header-CreateFormPage, .body-CreateFormPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:  100%;
+}
+
+.header-CreateFormPage > .MuiGrid-item, .body-CreateFormPage > .MuiGrid-item {
+    flex:  1;
+}
+
+.css-1eed5fa-MuiInputBase-root-MuiInput-root::after{
+    border-bottom: 2px solid #299d2e !important;
+}
+
+.css-953pxc-MuiInputBase-root-MuiInput-root::after{
+    border-bottom: 2px solid #299d2e !important;
+}
+
+.css-bz5ng3-MuiInputBase-root-MuiInput-root::after{
+    border-bottom: 2px solid #299d2e !important;
+}
+
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
+    display: flex !important;
+}
