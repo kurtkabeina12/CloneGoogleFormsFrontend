@@ -27,16 +27,27 @@ interface CreateFormPageProps {
 
 
 const CreateFormPage: React.FC<CreateFormPageProps> = () => {
-	const [option, setOption] = React.useState('');
 	const dispatch = useDispatch();
-	const selectedComponent = useSelector((state: RootState) => state.form.selectedComponent);
+	const [cards, setCards] = React.useState([{ selectedComponent: '', question: '', isRequired: false }]);
 
-	const handleSelectChange = (event: SelectChangeEvent<string>) => {
-		const component = event.target.value;
-		dispatch(setSelectedComponent(component));
+	const handleSelectChange = (event: SelectChangeEvent<string>, index: number) => {
+		const newCards = [...cards];
+		newCards[index].selectedComponent = event.target.value;
+		setCards(newCards);
 	};
 
-
+	const handleDeleteCard = (index: number) => {
+		const newCards = cards.filter((card, cardIndex) => cardIndex !== index); //убираем карточку с поля
+		setCards(newCards); // Обновляем состояние с новым массивом
+	 };
+	 
+	 const handleDuplicateCard = (index: number) => {
+		const newCards = [...cards]; // Создаем копию массива
+		const duplicatedCard = { ...newCards[index] }; // Создаем копию карточки
+		newCards.splice(index + 1, 0, duplicatedCard); // Вставляем дублированную карточку сразу после текущей
+		setCards(newCards); // Обновляем состояние с новым массивом
+	 };
+	 
 	return (
 		<form>
 			<Grid container spacing={3} className='header-CreateFormPage' >
@@ -54,102 +65,109 @@ const CreateFormPage: React.FC<CreateFormPageProps> = () => {
 					</Box>
 				</Grid>
 				<Grid container spacing={3} className='body-CreateFormPage'>
-					<Grid item xs={12} sm={8} md={6} className='body-card'>
-						<Box sx={{ mb: 3 }}>
-							<Paper elevation={2} sx={{ p: 3, paddingTop: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", borderLeft: "8px solid #00862b" }}>
-								<DragIndicatorIcon style={{ transform: "rotate(90deg)", marginBottom: '10px' }} />
-								<Box sx={{display:'flex', flexDirection:"row", width: "-webkit-fill-available", gap:1}}>
-								<TextField
-									variant="standard"
-									placeholder="Напишите вопрос"
-									name="title"
-									sx={{ mb: 3 }}
-									fullWidth
-								/>
-								<FormControl fullWidth>
-									<InputLabel id="demo-simple-select-label">Тип ответа</InputLabel>
-									<Select
-										labelId="demo-simple-select-label"
-										id="demo-simple-select"
-										value={selectedComponent}
-										label="Тип ответа"
-										onChange={handleSelectChange}
-										color='success'
-									>
-										<MenuItem value="Input">
-											<ShortTextIcon
-												sx={{
-													color: "#6b6b6b",
-													marginRight: "5px",
-												}}
-											/>
-											Короткий текст
-										</MenuItem>
-										<MenuItem value="Textarea">
-											<SubjectIcon
-												sx={{
-													color: "#6b6b6b",
-													marginRight: "5px",
-												}}
-											/>
-											Длинный текст
-										</MenuItem>
-										<MenuItem value="Radio">
-											<RadioButtonCheckedIcon
-												sx={{
-													color: "#6b6b6b",
-													marginRight: "5px",
-												}}
-											/>
-											Один из списка
-										</MenuItem>
-										<MenuItem value="Checkbox">
-											<CheckBoxOutlinedIcon
-												sx={{
-													color: "#6b6b6b",
-													marginRight: "5px",
-												}}
-											/>
-											Множество из списка
-										</MenuItem>
-										<MenuItem value="Data">
-											<EventIcon
-												sx={{
-													color: "#6b6b6b",
-													marginRight: "5px",
-												}}
-											/>
-											Дата
-										</MenuItem>
-									</Select>
-								</FormControl>
-								</Box>
-								{selectedComponent === 'Input' && <InputCopmponent />}
-								{selectedComponent === 'Textarea' && <TextareaComponent />}
-								{selectedComponent === 'Radio' && <RadioComponent />}
-								{selectedComponent === 'Checkbox' && <CheckboxesComponent />}
-								{selectedComponent === 'Data' && <DataComponent />}
-								<Grid item xs={12}>
-									<Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', borderTopColor: "black" }}>
-										<FormControlLabel control={<Switch color='success' />} style={{ whiteSpace: 'nowrap' }} label="Обязательный вопрос*" />
-										<Tooltip title="Удалить карточку">
-											<IconButton aria-label="delete" color="warning" size="small">
-												<DeleteIcon style={{ color: "red" }} />
-											</IconButton>
-										</Tooltip>
-										<Tooltip title="Дублировать карточку">
-											<IconButton aria-label="duplicate" color="success" size="small">
-												<FileCopyIcon />
-											</IconButton>
-										</Tooltip>
+					{cards.map((card, index) => (
+						<Grid item xs={12} sm={8} md={6} className='body-card'>
+							<Box sx={{ mb: 3 }}>
+								<Paper elevation={2} sx={{ p: 3, paddingTop: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", borderLeft: "8px solid #00862b" }}>
+									<DragIndicatorIcon style={{ transform: "rotate(90deg)", marginBottom: '10px' }} />
+									<Box sx={{ display: 'flex', flexDirection: "row", width: "-webkit-fill-available", gap: 1 }}>
+										<TextField
+											variant="standard"
+											placeholder="Напишите вопрос"
+											name="title"
+											sx={{ mb: 3 }}
+											fullWidth
+										/>
+										<FormControl fullWidth>
+											<InputLabel id="demo-simple-select-label">Тип ответа</InputLabel>
+											<Select
+												labelId="demo-simple-select-label"
+												id="demo-simple-select"
+												value={card.selectedComponent}
+												label="Тип ответа"
+												onChange={(event) => handleSelectChange(event, index)}
+												color='success'
+											>
+												<MenuItem value="Input">
+													<ShortTextIcon
+														sx={{
+															color: "#6b6b6b",
+															marginRight: "5px",
+														}}
+													/>
+													Короткий текст
+												</MenuItem>
+												<MenuItem value="Textarea">
+													<SubjectIcon
+														sx={{
+															color: "#6b6b6b",
+															marginRight: "5px",
+														}}
+													/>
+													Длинный текст
+												</MenuItem>
+												<MenuItem value="Radio">
+													<RadioButtonCheckedIcon
+														sx={{
+															color: "#6b6b6b",
+															marginRight: "5px",
+														}}
+													/>
+													Один из списка
+												</MenuItem>
+												<MenuItem value="Checkbox">
+													<CheckBoxOutlinedIcon
+														sx={{
+															color: "#6b6b6b",
+															marginRight: "5px",
+														}}
+													/>
+													Множество из списка
+												</MenuItem>
+												<MenuItem value="Data">
+													<EventIcon
+														sx={{
+															color: "#6b6b6b",
+															marginRight: "5px",
+														}}
+													/>
+													Дата
+												</MenuItem>
+											</Select>
+										</FormControl>
 									</Box>
-								</Grid>
-							</Paper>
-						</Box>
-					</Grid>
+									{card.selectedComponent === 'Input' && <InputCopmponent />}
+									{card.selectedComponent === 'Textarea' && <TextareaComponent />}
+									{card.selectedComponent === 'Radio' && <RadioComponent />}
+									{card.selectedComponent === 'Checkbox' && <CheckboxesComponent />}
+									{card.selectedComponent === 'Data' && <DataComponent />}
+									<Grid item xs={12}>
+										<Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', borderTopColor: "black" }}>
+											<FormControlLabel control={<Switch color='success' />} style={{ whiteSpace: 'nowrap' }} label="Обязательный вопрос*" />
+											<Tooltip title="Удалить карточку">
+												<IconButton aria-label="delete" color="warning" size="small" onClick={() => handleDeleteCard(index)}>
+													<DeleteIcon style={{ color: "red" }} />
+												</IconButton>
+											</Tooltip>
+											<Tooltip title="Дублировать карточку">
+												<IconButton aria-label="duplicate" color="success" size="small" onClick={() => handleDuplicateCard(index)}>
+													<FileCopyIcon />
+												</IconButton>
+											</Tooltip>
+										</Box>
+									</Grid>
+								</Paper>
+							</Box>
+						</Grid>
+					))}
 				</Grid>
 				<div>
-					<Fab size="medium" color="success" aria-label="add">
+					<Fab
+						size="medium"
+						color="success"
+						aria-label="add"
+						onClick={() => setCards([...cards, { selectedComponent: '', question: '', isRequired: false }])}
+					>
 						<AddIcon />
 					</Fab>
 				</div>
